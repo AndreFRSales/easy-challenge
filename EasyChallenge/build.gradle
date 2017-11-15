@@ -23,6 +23,7 @@ allprojects {
 }
 
 ext {
+    supportVersion = '25.4.0'
     butterknifeVersion = '8.8.1'
     retrofitVersion = '2.3.0'
     rxJavaVersion = '2.1.1'
