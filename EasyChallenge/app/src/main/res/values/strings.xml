@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">EasyChallenge</string>
     <string name="title_activity_maps">Easy Challenge</string>
+    <string name="search_hint">Type an address</string>
+    <string name="maps_menu_search_title">Search Address</string>
 </resources>
+    

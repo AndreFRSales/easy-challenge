@@ -1,9 +1,16 @@
 package br.com.andre.easychallenge.presentation.maps;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,7 +23,7 @@ import br.com.andre.easychallenge.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MapsView {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MapsView, SearchView.OnQueryTextListener {
 
     @BindView(R.id.maps_toolbar)
     Toolbar toolbar;
@@ -34,6 +41,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        setToolbar();
     }
 
     @Override
@@ -47,6 +55,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_maps, menu);
+        MenuItem myActionMenuItem = menu.findItem( R.id.menu_maps_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(myActionMenuItem);
+        searchView.setOnQueryTextListener(this);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public void resume() {
 
     }
@@ -55,5 +73,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setToolbar() {
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_activity_maps);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }
