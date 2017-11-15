@@ -5,4 +5,7 @@ package br.com.andre.easychallenge.presentation.maps;
  */
 
 public interface MapsView {
+
+    void resume();
+    void setToolbar();
 }
