@@ -8,4 +8,5 @@ public interface MapsView {
 
     void resume();
     void setToolbar();
+    void requestLocationPermission(int permissionId);
 }
