@@ -30,6 +30,8 @@ import br.com.andre.easychallenge.presentation.permission.PermissionView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static br.com.andre.easychallenge.presentation.permission.PermissionPresenter.ACCESS_FINE_LOCATION_PERMISSION;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MapsView, SearchView.OnQueryTextListener,
         PermissionView {
 
@@ -89,7 +91,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void requestLocationPermission(int permissionId) {
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
+                ACCESS_FINE_LOCATION_PERMISSION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
