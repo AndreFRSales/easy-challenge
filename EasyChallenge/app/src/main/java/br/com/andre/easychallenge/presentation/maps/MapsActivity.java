@@ -120,7 +120,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case PermissionPresenter.COARSE_LOCATION_REQUEST_CODE:
+            case PermissionPresenter.FINE_LOCATION_REQUEST_CODE:
                 presenter.checkPermission(grantResults, requestCode);
         }
     }

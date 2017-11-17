@@ -37,7 +37,7 @@ public class MapsPresenter implements MapsPresenterContract {
     }
 
     public void checkPermission(int[] grantResults, int requestCode) {
-        if(Objects.equals(PermissionPresenter.COARSE_LOCATION_REQUEST_CODE, requestCode)) {
+        if(Objects.equals(PermissionPresenter.FINE_LOCATION_REQUEST_CODE, requestCode)) {
             for (int result : grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
                     permissionPresenter.rejected();
