@@ -34,6 +34,8 @@ dependencies {
 
     //Maps Play Services
     implementation "com.google.android.gms:play-services-maps:$mapsPlayServices"
+    compile "com.google.android.gms:play-services-location:$mapsPlayServices"
+
 
     //Butterknife
     compile "com.jakewharton:butterknife:$butterknifeVersion"
