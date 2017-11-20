@@ -1,6 +1,7 @@
 package br.com.andre.easychallenge.presentation.maps;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,8 +13,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,6 +49,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap map;
     MapsPresenter presenter;
     PermissionPresenter permissionPresenter;
+    GeoDataClient geoDataClient;
+    PlaceDetectionClient placeDetectionClient;
+    FusedLocationProviderClient fusedLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +62,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        setupProperties();
+    }
+
+    private void setupProperties() {
         PermissionManagerContract permissionManagerContract = new PermissionManager(this);
         permissionPresenter = new PermissionPresenter(permissionManagerContract, this);
         presenter = new MapsPresenter(this, permissionPresenter);
-
-        presenter.start();
+        geoDataClient = Places.getGeoDataClient(this, null);
+        placeDetectionClient = Places.getPlaceDetectionClient(this, null);
+        fusedLocation = LocationServices.getFusedLocationProviderClient(this);
     }
-
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        presenter.start();
     }
 
     @Override
@@ -100,6 +109,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public void updateMap(double latitude, double longitude, int zoom) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(latitude,
+                        longitude), zoom));
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
@@ -111,10 +127,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void permissionAccepted() {
+        presenter.setupAcceptedMap(fusedLocation);
     }
 
     @Override
     public void permissionRejected() {
+        presenter.setupRejectedMap();
     }
 
     @Override
@@ -124,4 +142,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 presenter.checkPermission(grantResults, requestCode);
         }
     }
+
+    @Override
+    @SuppressLint("MissingPermission")
+    public void disableMapPropertiesLocation() {
+        map.setMyLocationEnabled(false);
+        map.getUiSettings().setMyLocationButtonEnabled(false);
+    }
+
+    @Override
+    @SuppressLint("MissingPermission")
+    public void enableMapPropertiesLocation() {
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+    }
+
 }

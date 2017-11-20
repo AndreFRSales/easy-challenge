@@ -10,13 +10,18 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        resValue "string", "google_maps_key",
+                (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {
@@ -34,9 +39,9 @@ dependencies {
 
     //Maps Play Services
     implementation "com.google.android.gms:play-services-maps:$mapsPlayServices"
-    compile "com.google.android.gms:play-services-location:$mapsPlayServices"
+    compile "com.google.android.gms:play-services:$mapsPlayServices"
 
-
+1
     //Butterknife
     compile "com.jakewharton:butterknife:$butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"

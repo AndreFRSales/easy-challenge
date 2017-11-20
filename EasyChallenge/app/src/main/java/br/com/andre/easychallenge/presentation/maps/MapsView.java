@@ -8,4 +8,7 @@ public interface MapsView {
 
     void setToolbar();
     void requestLocationPermission(int permissionId);
+    void updateMap(double latitude, double longitude, int zoom);
+    void disableMapPropertiesLocation();
+    void enableMapPropertiesLocation();
 }

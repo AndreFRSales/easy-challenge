@@ -1,5 +1,8 @@
 package br.com.andre.easychallenge.presentation.maps.presenter;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.GoogleMap;
+
 import br.com.andre.easychallenge.presentation.base.BasePresenterContract;
 
 /**
@@ -8,6 +11,6 @@ import br.com.andre.easychallenge.presentation.base.BasePresenterContract;
 
 public interface MapsPresenterContract extends BasePresenterContract{
 
-
-
+    void setupAcceptedMap(FusedLocationProviderClient fusedLocationProviderClient);
+    void setupRejectedMap();
 }
