@@ -8,5 +8,6 @@ public interface BasePresenterContract {
 
     void start();
     void showLoading();
+    void destroy();
 
 }

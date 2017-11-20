@@ -12,8 +12,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 
 import java.util.Objects;
 
+import br.com.andre.easychallenge.data.map.mappers.CurrentPositionMapper;
+import br.com.andre.easychallenge.data.map.repository.MapsDataRepository;
+import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSource;
+import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSourceImp;
+import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
+import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
+import br.com.andre.easychallenge.domain.map.usecases.GetCurrentPositionUsecase;
 import br.com.andre.easychallenge.presentation.maps.MapsView;
 import br.com.andre.easychallenge.presentation.permission.PermissionPresenter;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by andre on 15/11/17.
@@ -25,12 +35,18 @@ public class MapsPresenter implements MapsPresenterContract {
     private MapsView view;
     private PermissionPresenter permissionPresenter;
     private boolean permissionGranted;
-    private Location lastKnownLocation;
+    private CurrentPosition lastKnownLocation;
     private int DEFAULT_ZOOM = 18;
+    GetCurrentPositionUsecase getCurrentPositionUsecase;
+    Disposable disposable;
 
     public MapsPresenter(MapsView view, PermissionPresenter permissionPresenter) {
         this.view = view;
         this.permissionPresenter = permissionPresenter;
+        MapsRemoteDataSource remoteDataSource = new MapsRemoteDataSourceImp();
+        CurrentPositionMapper mapper = new CurrentPositionMapper();
+        MapsRepository repository = new MapsDataRepository(remoteDataSource, mapper);
+        getCurrentPositionUsecase = new GetCurrentPositionUsecase(repository);
     }
 
     @Override
@@ -43,6 +59,11 @@ public class MapsPresenter implements MapsPresenterContract {
     @Override
     public void showLoading() {
 
+    }
+
+    @Override
+    public void destroy() {
+        disposable.dispose();
     }
 
     public void checkPermission(int[] grantResults, int requestCode) {
@@ -77,21 +98,19 @@ public class MapsPresenter implements MapsPresenterContract {
     @SuppressLint("MissingPermission")
     private void getDeviceLocation(FusedLocationProviderClient fusedLocationProviderClient) {
         if(permissionGranted) {
-            com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-            locationResult.addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull com.google.android.gms.tasks.Task task) {
-                    if (task.isSuccessful()) {
-                        lastKnownLocation = (Location) task.getResult();
-                        view.updateMap(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), DEFAULT_ZOOM);
-                    } else {
-                        view.updateMap(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), DEFAULT_ZOOM);
-                        view.disableMapPropertiesLocation();
-                    }
-                }
+            disposable = getCurrentPositionUsecase.execute(fusedLocationProviderClient).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread())
+            .subscribe(currentPosition -> {
+                lastKnownLocation = currentPosition;
+                view.updateMap(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), DEFAULT_ZOOM);
+            }, error -> {
+                view.updateMap(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), DEFAULT_ZOOM);
+                view.disableMapPropertiesLocation();
             });
         }
-
     }
+
+
 
 }
