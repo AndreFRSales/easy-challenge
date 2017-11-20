@@ -49,8 +49,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap map;
     MapsPresenter presenter;
     PermissionPresenter permissionPresenter;
-    GeoDataClient geoDataClient;
-    PlaceDetectionClient placeDetectionClient;
     FusedLocationProviderClient fusedLocation;
 
 
@@ -69,8 +67,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         PermissionManagerContract permissionManagerContract = new PermissionManager(this);
         permissionPresenter = new PermissionPresenter(permissionManagerContract, this);
         presenter = new MapsPresenter(this, permissionPresenter);
-        geoDataClient = Places.getGeoDataClient(this, null);
-        placeDetectionClient = Places.getPlaceDetectionClient(this, null);
         fusedLocation = LocationServices.getFusedLocationProviderClient(this);
     }
 
