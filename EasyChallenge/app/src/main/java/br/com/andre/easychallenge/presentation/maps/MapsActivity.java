@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.com.andre.easychallenge.R;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenter;
+import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenterContract;
 import br.com.andre.easychallenge.presentation.permission.PermissionManager;
 import br.com.andre.easychallenge.presentation.permission.PermissionManagerContract;
 import br.com.andre.easychallenge.presentation.permission.PermissionPresenter;
@@ -45,7 +46,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     FloatingActionButton currentPositionFab;
 
     private GoogleMap map;
-    MapsPresenter presenter;
+    MapsPresenterContract presenter;
     PermissionPresenter permissionPresenter;
     FusedLocationProviderClient fusedLocation;
 
@@ -60,6 +61,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         setupProperties();
     }
+
 
     private void setupProperties() {
         PermissionManagerContract permissionManagerContract = new PermissionManager(this);
@@ -114,6 +116,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         focusOnLatLng(latLng, zoom);
         map.setOnMarkerDragListener(this);
         map.addMarker(new MarkerOptions().position(latLng).draggable(true));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        presenter.saveState(outState);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        presenter.restoreState(savedInstanceState);
     }
 
     @Override
