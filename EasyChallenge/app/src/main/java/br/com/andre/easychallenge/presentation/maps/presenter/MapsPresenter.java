@@ -3,6 +3,7 @@ package br.com.andre.easychallenge.presentation.maps.presenter;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.gcm.Task;
@@ -54,19 +55,34 @@ public class MapsPresenter implements MapsPresenterContract {
     public void start() {
         view.requestLocationPermission(REQUEST_LOCATION);
         view.setToolbar();
-        permissionPresenter.requestPermission();
-    }
-
-    @Override
-    public void resume() {
-        view.focusOnLatLng(createLatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM);
+        if(lastKnownLocation == null) {
+            permissionPresenter.requestPermission();
+        } else {
+            view.enableMapPropertiesLocation();
+            view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
+        }
     }
 
     @Override
     public void destroy() {
-        disposable.dispose();
+        if(disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
     }
 
+    @Override
+    public void saveState(Bundle outState) {
+        MapsBundler mapsBundler = new MapsBundler(outState);
+        mapsBundler.setCurrentPosition(lastKnownLocation);
+    }
+
+    @Override
+    public void restoreState(Bundle savedInstanceState) {
+        MapsBundleReader reader = new MapsBundleReader(savedInstanceState);
+        lastKnownLocation = reader.getCurrentPostion();
+    }
+
+    @Override
     public void checkPermission(int[] grantResults, int requestCode) {
         if(Objects.equals(PermissionPresenter.FINE_LOCATION_REQUEST_CODE, requestCode)) {
             for (int result : grantResults) {
@@ -110,16 +126,16 @@ public class MapsPresenter implements MapsPresenterContract {
                     observeOn(AndroidSchedulers.mainThread())
             .subscribe(currentPosition -> {
                 lastKnownLocation = currentPosition;
-                view.updateMap(createLatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM);
+                view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
             }, error -> {
-                view.updateMap(createLatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM);
+                view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
                 view.disableMapPropertiesLocation();
             });
         }
     }
 
-    private LatLng createLatLng(double latitude, double longitude) {
-        return new LatLng(latitude, longitude);
+    private LatLng createLatLng(CurrentPosition currentPosition) {
+        return new LatLng(currentPosition.getLatitude(), currentPosition.getLongitude());
     }
 
 

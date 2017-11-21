@@ -1,5 +1,7 @@
 package br.com.andre.easychallenge.presentation.maps.presenter;
 
+import android.os.Bundle;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,4 +17,6 @@ public interface MapsPresenterContract extends BasePresenterContract{
     void setupAcceptedMap(FusedLocationProviderClient fusedLocationProviderClient);
     void setupRejectedMap();
     void updateLastPosition(LatLng latLng);
+    void checkPermission(int[] grantResults, int requestCode);
+
 }
