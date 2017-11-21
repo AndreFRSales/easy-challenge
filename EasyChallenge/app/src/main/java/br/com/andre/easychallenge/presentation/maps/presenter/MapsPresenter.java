@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.gcm.Task;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import java.util.Objects;
@@ -57,8 +58,8 @@ public class MapsPresenter implements MapsPresenterContract {
     }
 
     @Override
-    public void showLoading() {
-
+    public void resume() {
+        view.focusOnLatLng(createLatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM);
     }
 
     @Override
@@ -95,6 +96,12 @@ public class MapsPresenter implements MapsPresenterContract {
         lastKnownLocation = null;
     }
 
+    @Override
+    public void updateLastPosition(LatLng latLng) {
+        lastKnownLocation = new CurrentPosition(latLng.latitude, latLng.longitude);
+        view.focusOnLatLng(latLng, DEFAULT_ZOOM);
+    }
+
     @SuppressLint("MissingPermission")
     private void getDeviceLocation(FusedLocationProviderClient fusedLocationProviderClient) {
         if(permissionGranted) {
@@ -103,14 +110,17 @@ public class MapsPresenter implements MapsPresenterContract {
                     observeOn(AndroidSchedulers.mainThread())
             .subscribe(currentPosition -> {
                 lastKnownLocation = currentPosition;
-                view.updateMap(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), DEFAULT_ZOOM);
+                view.updateMap(createLatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM);
             }, error -> {
-                view.updateMap(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), DEFAULT_ZOOM);
+                view.updateMap(createLatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM);
                 view.disableMapPropertiesLocation();
             });
         }
     }
 
+    private LatLng createLatLng(double latitude, double longitude) {
+        return new LatLng(latitude, longitude);
+    }
 
 
 }

@@ -7,7 +7,7 @@ package br.com.andre.easychallenge.presentation.base;
 public interface BasePresenterContract {
 
     void start();
-    void showLoading();
+    void resume();
     void destroy();
 
 }
