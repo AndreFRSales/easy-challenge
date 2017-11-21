@@ -16,14 +16,12 @@ import android.view.MenuItem;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.com.andre.easychallenge.R;
@@ -38,7 +36,7 @@ import butterknife.ButterKnife;
 import static br.com.andre.easychallenge.presentation.permission.PermissionPresenter.ACCESS_FINE_LOCATION_PERMISSION;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MapsView, SearchView.OnQueryTextListener,
-        PermissionView {
+        PermissionView, GoogleMap.OnMarkerDragListener {
 
     @BindView(R.id.maps_toolbar)
     Toolbar toolbar;
@@ -110,11 +108,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
     @Override
-    public void updateMap(double latitude, double longitude, int zoom) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(latitude,
-                        longitude), zoom));
+    public void updateMap(LatLng latLng, int zoom) {
+        focusOnLatLng(latLng, zoom);
+        map.setOnMarkerDragListener(this);
+        map.addMarker(new MarkerOptions().position(latLng).draggable(true));
     }
 
     @Override
@@ -159,4 +158,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         map.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
+    @Override
+    public void focusOnLatLng(LatLng latLng, int zoom) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                latLng, zoom));
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        presenter.updateLastPosition(marker.getPosition());
+    }
 }
