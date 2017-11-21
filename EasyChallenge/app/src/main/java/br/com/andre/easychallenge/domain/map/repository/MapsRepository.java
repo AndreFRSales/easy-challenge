@@ -12,4 +12,5 @@ import io.reactivex.Observable;
 public interface MapsRepository {
 
     Observable<CurrentPosition> getCurrentPosition(FusedLocationProviderClient fusedLocationProviderClient);
+    Observable<CurrentPosition> findAddress(String query);
 }

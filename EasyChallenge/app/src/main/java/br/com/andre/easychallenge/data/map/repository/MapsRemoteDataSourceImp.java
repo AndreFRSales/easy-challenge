@@ -1,11 +1,13 @@
 package br.com.andre.easychallenge.data.map.repository;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.location.Location;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 
 import br.com.andre.easychallenge.data.map.mappers.CurrentPositionMapper;
+import br.com.andre.easychallenge.data.map.models.GoogleMapAddress;
 import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
 import io.reactivex.Observable;
 
@@ -14,6 +16,12 @@ import io.reactivex.Observable;
  */
 
 public class MapsRemoteDataSourceImp implements MapsRemoteDataSource {
+
+    Context context;
+
+    public MapsRemoteDataSourceImp(Context context) {
+        this.context = context;
+    }
 
     @Override
     @SuppressLint("MissingPermission")
@@ -29,5 +37,10 @@ public class MapsRemoteDataSourceImp implements MapsRemoteDataSource {
                 }
             });
         });
+    }
+
+    @Override
+    public Observable<GoogleMapAddress> findAddress(String query) {
+        return null;
     }
 }

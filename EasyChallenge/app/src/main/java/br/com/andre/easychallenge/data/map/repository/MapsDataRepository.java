@@ -25,4 +25,9 @@ public class MapsDataRepository implements MapsRepository {
     public Observable<CurrentPosition> getCurrentPosition(FusedLocationProviderClient fusedLocationProviderClient) {
         return remoteDataSource.getCurrentPosition(fusedLocationProviderClient).map(mapper::mapToModel);
     }
+
+    @Override
+    public Observable<CurrentPosition> findAddress(String query) {
+        return null;
+    }
 }

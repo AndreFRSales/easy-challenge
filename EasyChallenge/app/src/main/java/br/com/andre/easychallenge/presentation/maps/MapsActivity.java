@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.com.andre.easychallenge.R;
+import br.com.andre.easychallenge.data.map.mappers.CurrentPositionMapper;
+import br.com.andre.easychallenge.data.map.repository.MapsDataRepository;
+import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSource;
+import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSourceImp;
+import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenter;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenterContract;
 import br.com.andre.easychallenge.presentation.permission.PermissionManager;
@@ -66,11 +72,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupProperties() {
         PermissionManagerContract permissionManagerContract = new PermissionManager(this);
         permissionPresenter = new PermissionPresenter(permissionManagerContract, this);
-        presenter = new MapsPresenter(this, permissionPresenter);
+        MapsRepository mapsRepository = setupRepository();
+        presenter = new MapsPresenter(this, permissionPresenter, mapsRepository);
         fusedLocation = LocationServices.getFusedLocationProviderClient(this);
     }
 
-
+    @NonNull
+    private MapsRepository setupRepository() {
+        MapsRemoteDataSource remoteDataSource = new MapsRemoteDataSourceImp(this);
+        CurrentPositionMapper mapper = new CurrentPositionMapper();
+        return new MapsDataRepository(remoteDataSource, mapper);
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -132,7 +144,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
+        presenter.findAddress(query);
+        return true;
     }
 
     @Override
