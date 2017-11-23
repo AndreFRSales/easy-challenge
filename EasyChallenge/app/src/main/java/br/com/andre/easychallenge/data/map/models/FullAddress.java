@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by andre on 21/11/17.
  */
 
-class FullAddress {
+public class FullAddress {
 
     @SerializedName("formatted_address")
     private String formattedAddress;

@@ -18,5 +18,5 @@ public interface MapsPresenterContract extends BasePresenterContract{
     void setupRejectedMap();
     void updateLastPosition(LatLng latLng);
     void checkPermission(int[] grantResults, int requestCode);
-    void findAddress(String query);
+    void findAddress(String query, String key);
 }

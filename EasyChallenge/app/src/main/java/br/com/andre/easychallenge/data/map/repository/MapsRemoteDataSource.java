@@ -15,6 +15,6 @@ import io.reactivex.Observable;
 public interface MapsRemoteDataSource {
 
     Observable<Location> getCurrentPosition(FusedLocationProviderClient fusedLocationProviderClient);
-    Observable<GoogleMapAddress> findAddress(String query);
+    Observable<GoogleMapAddress> findAddress(String query, String key);
 
 }

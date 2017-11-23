@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName;
  * Created by andre on 21/11/17.
  */
 
-class GoogleLocation {
+public class GoogleLocation {
 
     @SerializedName("lat")
     private double latitude;
-    @SerializedName("longitude")
+    @SerializedName("lng")
     private double longitude;
 
     public double getLatitude() {

@@ -1,5 +1,7 @@
 package br.com.andre.easychallenge.presentation.maps;
 
+import android.support.annotation.StringRes;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -14,4 +16,6 @@ public interface MapsView {
     void disableMapPropertiesLocation();
     void enableMapPropertiesLocation();
     void focusOnLatLng(LatLng latLng, int zoom);
+    void showErrorSnackBar(@StringRes int message);
+    void hideKeyboard();
 }
