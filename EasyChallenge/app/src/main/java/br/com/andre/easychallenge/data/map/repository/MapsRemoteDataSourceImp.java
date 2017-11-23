@@ -5,8 +5,9 @@ import android.location.Location;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 
-import br.com.andre.easychallenge.data.map.mappers.CurrentPositionMapper;
-import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
+import br.com.andre.easychallenge.data.map.models.GoogleMapAddress;
+import br.com.andre.easychallenge.data.map.network.GeocodingService;
+import br.com.andre.easychallenge.data.retrofit.RetrofitFactory;
 import io.reactivex.Observable;
 
 /**
@@ -14,6 +15,13 @@ import io.reactivex.Observable;
  */
 
 public class MapsRemoteDataSourceImp implements MapsRemoteDataSource {
+
+    GeocodingService geocodingService;
+
+    public MapsRemoteDataSourceImp() {
+        geocodingService = RetrofitFactory.createGeocodingProvider().create(GeocodingService.class);
+
+    }
 
     @Override
     @SuppressLint("MissingPermission")
@@ -29,5 +37,11 @@ public class MapsRemoteDataSourceImp implements MapsRemoteDataSource {
                 }
             });
         });
+    }
+
+    @Override
+    public Observable<GoogleMapAddress> findAddress(String query, String key) {
+        return geocodingService.getTrends(query, key)
+                .doOnError(Observable::error);
     }
 }

@@ -1,28 +1,20 @@
 package br.com.andre.easychallenge.data.map.repository;
 
+import android.location.Location;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 
-import br.com.andre.easychallenge.data.map.mappers.CurrentPositionMapper;
-import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
-import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
+import br.com.andre.easychallenge.data.map.models.GoogleMapAddress;
+import br.com.andre.easychallenge.domain.map.usecases.FindAddressUsecase;
 import io.reactivex.Observable;
 
 /**
- * Created by andre on 20/11/17.
+ * Created by andre on 22/11/17.
  */
 
-public class MapsDataRepository implements MapsRepository {
+public interface MapsDataRepository {
 
-    MapsRemoteDataSource remoteDataSource;
-    CurrentPositionMapper mapper;
+    Observable<Location> getCurrentPosition(FusedLocationProviderClient fusedLocationProviderClient);
+    Observable<GoogleMapAddress> findAddress(FindAddressUsecase.Params query);
 
-    public MapsDataRepository(MapsRemoteDataSource remoteDataSource, CurrentPositionMapper mapper) {
-        this.remoteDataSource = remoteDataSource;
-        this.mapper = mapper;
-    }
-
-    @Override
-    public Observable<CurrentPosition> getCurrentPosition(FusedLocationProviderClient fusedLocationProviderClient) {
-        return remoteDataSource.getCurrentPosition(fusedLocationProviderClient).map(mapper::mapToModel);
-    }
 }

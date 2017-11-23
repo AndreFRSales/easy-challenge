@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 
+import br.com.andre.easychallenge.data.map.models.GoogleMapAddress;
 import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
 import io.reactivex.Observable;
 
@@ -14,5 +15,6 @@ import io.reactivex.Observable;
 public interface MapsRemoteDataSource {
 
     Observable<Location> getCurrentPosition(FusedLocationProviderClient fusedLocationProviderClient);
+    Observable<GoogleMapAddress> findAddress(String query, String key);
 
 }

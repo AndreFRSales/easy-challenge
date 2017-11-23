@@ -2,9 +2,13 @@ package br.com.andre.easychallenge.presentation.maps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -13,6 +17,9 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -25,6 +32,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.com.andre.easychallenge.R;
+import br.com.andre.easychallenge.data.map.mappers.MapsMapper;
+import br.com.andre.easychallenge.data.map.repository.MapsDataRepositoryImp;
+import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSource;
+import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSourceImp;
+import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenter;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenterContract;
 import br.com.andre.easychallenge.presentation.permission.PermissionManager;
@@ -39,11 +51,17 @@ import static br.com.andre.easychallenge.presentation.permission.PermissionPrese
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MapsView, SearchView.OnQueryTextListener,
         PermissionView, GoogleMap.OnMarkerDragListener {
 
+    @BindView(R.id.maps_container)
+    CoordinatorLayout container;
+
     @BindView(R.id.maps_toolbar)
     Toolbar toolbar;
 
     @BindView(R.id.maps_current_fab)
     FloatingActionButton currentPositionFab;
+
+    @BindView(R.id.maps_loading_indicator)
+    FrameLayout loadingOverlayContainer;
 
     private GoogleMap map;
     MapsPresenterContract presenter;
@@ -66,11 +84,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupProperties() {
         PermissionManagerContract permissionManagerContract = new PermissionManager(this);
         permissionPresenter = new PermissionPresenter(permissionManagerContract, this);
-        presenter = new MapsPresenter(this, permissionPresenter);
+        MapsRepository mapsRepository = setupRepository();
+        presenter = new MapsPresenter(this, permissionPresenter, mapsRepository);
         fusedLocation = LocationServices.getFusedLocationProviderClient(this);
     }
 
-
+    @NonNull
+    private MapsRepository setupRepository() {
+        MapsRemoteDataSource remoteDataSource = new MapsRemoteDataSourceImp();
+        return new MapsDataRepositoryImp(remoteDataSource);
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -132,7 +155,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
+        presenter.findAddress(query, getString(R.string.google_maps_key));
+        return true;
     }
 
     @Override
@@ -179,6 +203,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public void showErrorSnackBar(int message) {
+        Snackbar.make(container, getString(message), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
     public void onMarkerDragStart(Marker marker) {
 
     }
@@ -191,5 +220,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMarkerDragEnd(Marker marker) {
         presenter.updateLastPosition(marker.getPosition());
+    }
+
+    @Override
+    public void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    public void showLoadingOverlay() {
+        loadingOverlayContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingOverlay() {
+        loadingOverlayContainer.setVisibility(View.GONE);
     }
 }
