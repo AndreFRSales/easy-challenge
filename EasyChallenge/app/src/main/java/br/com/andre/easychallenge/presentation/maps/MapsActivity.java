@@ -112,6 +112,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MenuItem myActionMenuItem = menu.findItem( R.id.menu_maps_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(myActionMenuItem);
         searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint(getString(R.string.search_hint));
 
         return super.onCreateOptionsMenu(menu);
     }
