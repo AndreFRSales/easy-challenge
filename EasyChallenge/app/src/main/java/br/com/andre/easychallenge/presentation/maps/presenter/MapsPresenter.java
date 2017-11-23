@@ -98,13 +98,16 @@ public class MapsPresenter implements MapsPresenterContract {
 
     @Override
     public void findAddress(String query, String key) {
+        view.showLoadingOverlay();
         disposables.add(findAddressUsecase.execute(new FindAddressUsecase.Params(query, key))
         .subscribe(
                 address -> {
+                    view.hideLoadingOverlay();
                     view.hideKeyboard();
                     view.updateMap(createLatLng(address), DEFAULT_ZOOM);
                 },
                 error -> {
+                    view.hideLoadingOverlay();
                     view.hideKeyboard();
                     view.showErrorSnackBar(R.string.maps_menu_search_didnt_found);
                 }
@@ -135,12 +138,15 @@ public class MapsPresenter implements MapsPresenterContract {
 
     @SuppressLint("MissingPermission")
     private void getDeviceLocation(FusedLocationProviderClient fusedLocationProviderClient) {
+        view.showLoadingOverlay();
         if(permissionGranted) {
             disposables.add(getCurrentPositionUsecase.execute(fusedLocationProviderClient)
             .subscribe(currentPosition -> {
+                view.hideLoadingOverlay();
                 lastKnownLocation = currentPosition;
                 view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
             }, error -> {
+                view.hideLoadingOverlay();
                 view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
                 view.disableMapPropertiesLocation();
             }));

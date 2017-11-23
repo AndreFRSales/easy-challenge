@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by andre on 15/11/17.
  */
 
-public interface MapsView {
+public interface MapsView extends BaseView{
 
     void setToolbar();
     void requestLocationPermission(int permissionId);

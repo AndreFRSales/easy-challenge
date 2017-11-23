@@ -23,7 +23,6 @@ public class MapsDataRepositoryImp implements MapsRepository {
     public MapsDataRepositoryImp(MapsRemoteDataSource remoteDataSource) {
         this.remoteDataSource = remoteDataSource;
         this.mapsMapper = new MapsMapper();
-
     }
 
     @Override

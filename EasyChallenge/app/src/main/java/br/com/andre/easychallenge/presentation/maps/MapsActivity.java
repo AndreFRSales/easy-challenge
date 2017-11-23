@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -58,6 +59,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @BindView(R.id.maps_current_fab)
     FloatingActionButton currentPositionFab;
+
+    @BindView(R.id.maps_loading_indicator)
+    FrameLayout loadingOverlayContainer;
 
     private GoogleMap map;
     MapsPresenterContract presenter;
@@ -225,5 +229,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void showLoadingOverlay() {
+        loadingOverlayContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingOverlay() {
+        loadingOverlayContainer.setVisibility(View.GONE);
     }
 }
