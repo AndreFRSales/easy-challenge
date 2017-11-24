@@ -114,6 +114,11 @@ public class MapsPresenter implements MapsPresenterContract {
         ));
     }
 
+    @Override
+    public void saveBookmark(String dialogResult) {
+        //TODO: Create usecase to save Bookmark at SharedPreferences
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void setupAcceptedMap(FusedLocationProviderClient fusedLocationProviderClient) {
@@ -147,8 +152,8 @@ public class MapsPresenter implements MapsPresenterContract {
                 view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
             }, error -> {
                 view.hideLoadingOverlay();
-                view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
                 view.disableMapPropertiesLocation();
+                view.showErrorSnackBar(R.string.maps_error_current_position);
             }));
         }
     }
