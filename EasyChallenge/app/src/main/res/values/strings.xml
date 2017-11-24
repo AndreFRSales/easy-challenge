@@ -8,9 +8,14 @@
     <string name="maps_error_current_position">Ops, something wrong ocurred trying to localize you. Are you at another planet? :o</string>
     <string name="component_edit_text_dialog_hint">Type some description like Grandma\'s house</string>
 
-    <!--Dialog Add Bookmark-->
-    <string name="dialog_bookmark_title">Add a bookmark</string>
+    <!--Dialog BookmarkEntitymark-->
+    <string name="dialog_bookmark_title">Add a bookmarkEntity</string>
     <string name="dialog_bookmark_positive_button">OK</string>
     <string name="dialog_bookmark_negative_button">Cancel</string>
+
+
+    <!--SaveBookmarkUsecase-->
+    <string name="save_bookmark_usecase_message_success">Place saved successfully! :)</string>
+    <string name="save_bookmark_usecase_message_error">Unfortunately it was impossible to save your place! :(</string>
 </resources>
     
