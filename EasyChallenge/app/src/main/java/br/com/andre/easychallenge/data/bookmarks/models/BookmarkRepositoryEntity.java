@@ -1,16 +1,16 @@
 package br.com.andre.easychallenge.data.bookmarks.models;
 
 /**
- * Created by andre on 15/11/17.
+ * Created by andre on 25/11/17.
  */
 
-public class BookmarkEntity {
+public class BookmarkRepositoryEntity {
 
-    String description;
-    double latitude;
-    double longitude;
+    private String description;
+    private double latitude;
+    private double longitude;
 
-    public BookmarkEntity(String description, double latitude, double longitude) {
+    public BookmarkRepositoryEntity(String description, double latitude, double longitude) {
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;

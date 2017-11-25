@@ -1,7 +1,10 @@
 package br.com.andre.easychallenge.data.bookmarks.repository;
 
 
-import br.com.andre.easychallenge.data.bookmarks.models.BookmarkEntity;
+import java.util.List;
+
+import br.com.andre.easychallenge.data.bookmarks.models.BookmarkLocalEntity;
+import br.com.andre.easychallenge.data.bookmarks.models.BookmarkRepositoryEntity;
 import io.reactivex.Observable;
 
 /**
@@ -11,13 +14,24 @@ import io.reactivex.Observable;
 public class BookmarksRepositoryImp implements BookmarksRepository {
 
     BookmarkLocalDataSource bookmarkLocalDataSource;
+    BookmarkRemoteDataSource bookmarkRemoteDataSource;
 
-    public BookmarksRepositoryImp(BookmarkLocalDataSource bookmarkLocalDataSource) {
+    public BookmarksRepositoryImp(BookmarkLocalDataSource bookmarkLocalDataSource, BookmarkRemoteDataSource bookmarkRemoteDataSource) {
         this.bookmarkLocalDataSource = bookmarkLocalDataSource;
+        this.bookmarkRemoteDataSource = bookmarkRemoteDataSource;
     }
 
     @Override
-    public Observable<Void> addBookmark(BookmarkEntity bookmarkEntity) {
-        return bookmarkLocalDataSource.addBookmark(bookmarkEntity);
+    public Observable<Void> addBookmark(BookmarkLocalEntity bookmarkLocalEntity) {
+        return bookmarkLocalDataSource.addBookmark(bookmarkLocalEntity);
+    }
+
+    @Override
+    public Observable<List<BookmarkRepositoryEntity>> getBookmarks() {
+        return Observable.zip(bookmarkRemoteDataSource.getBookmarksList(), bookmarkLocalDataSource.getBookmarks(),
+                (bookmarkEntities, bookmarkEntities2) -> {
+                bookmarkEntities.addAll(bookmarkEntities2);
+                return bookmarkEntities;
+        });
     }
 }

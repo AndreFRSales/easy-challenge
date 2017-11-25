@@ -1,6 +1,11 @@
 package br.com.andre.easychallenge.domain.bookmarks.mapper;
 
-import br.com.andre.easychallenge.data.bookmarks.models.BookmarkEntity;
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.andre.easychallenge.data.bookmarks.models.BookmarkLocalEntity;
+import br.com.andre.easychallenge.data.bookmarks.models.BookmarkRepositoryEntity;
+import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.SaveBookmarkUsecase;
 
 /**
@@ -9,8 +14,18 @@ import br.com.andre.easychallenge.domain.bookmarks.usecase.SaveBookmarkUsecase;
 
 public class BookmarksMapper {
 
-    public BookmarkEntity mapToRepositoryModel(SaveBookmarkUsecase.Params params) {
-        return new BookmarkEntity(params.getDescription(), params.getCurrentPosition().getLatitude(),
+    public BookmarkLocalEntity mapToRepositoryModel(SaveBookmarkUsecase.Params params) {
+        return new BookmarkLocalEntity(params.getDescription(), params.getCurrentPosition().getLatitude(),
                 params.getCurrentPosition().getLongitude());
+    }
+
+    public static List<Bookmark> mapToDomainModel(List<BookmarkRepositoryEntity> bookmarkRepositoryEntityList) {
+        ArrayList<Bookmark> bookmarks = new ArrayList<>();
+        for (BookmarkRepositoryEntity bookmarkLocalEntity : bookmarkRepositoryEntityList) {
+            bookmarks.add(new Bookmark(bookmarkLocalEntity.getDescription(), bookmarkLocalEntity.getLatitude(),
+                    bookmarkLocalEntity.getLongitude()));
+        }
+
+        return bookmarks;
     }
 }

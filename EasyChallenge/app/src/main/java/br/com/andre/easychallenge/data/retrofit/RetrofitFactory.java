@@ -12,4 +12,7 @@ public class RetrofitFactory {
         return new RetrofitProvider(ConstantBaseUrl.GEOCODING_BASE_URL).provideRetrofit();
     }
 
+    public static Retrofit createMockApiProvider() {
+        return new RetrofitProvider(ConstantBaseUrl.MOCK_API_BASE_URL).provideRetrofit();
+    }
 }

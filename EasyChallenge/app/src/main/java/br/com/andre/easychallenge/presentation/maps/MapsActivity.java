@@ -34,11 +34,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import br.com.andre.easychallenge.R;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkLocalDataSource;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkLocalDataSourceImp;
+import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkRemoteDataSource;
+import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkRemoteDataSourceImp;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepository;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepositoryImp;
 import br.com.andre.easychallenge.data.map.repository.MapsDataRepositoryImp;
 import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSource;
 import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSourceImp;
+import br.com.andre.easychallenge.domain.bookmarks.usecase.GetBookmarksUsecase;
 import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenter;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenterContract;
@@ -99,7 +102,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private BookmarksRepository setupBookmarksRepository() {
         BookmarkLocalDataSource bookmarkLocalDataSource = new BookmarkLocalDataSourceImp(this);
-        return new BookmarksRepositoryImp(bookmarkLocalDataSource);
+        BookmarkRemoteDataSource bookmarkRemoteDataSource = new BookmarkRemoteDataSourceImp();
+        return new BookmarksRepositoryImp(bookmarkLocalDataSource, bookmarkRemoteDataSource);
     }
 
     @NonNull
@@ -271,4 +275,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onDialogButtonNegativeClicked() {
         bookmarkDescriptionDialog = null;
     }
+
 }
