@@ -3,7 +3,6 @@ package br.com.andre.easychallenge.presentation.maps.presenter;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.model.LatLng;
@@ -12,11 +11,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import br.com.andre.easychallenge.R;
+import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepository;
+import br.com.andre.easychallenge.domain.bookmarks.usecase.SaveBookmarkUsecase;
 import br.com.andre.easychallenge.domain.map.models.Address;
 import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
 import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
 import br.com.andre.easychallenge.domain.map.usecases.FindAddressUsecase;
 import br.com.andre.easychallenge.domain.map.usecases.GetCurrentPositionUsecase;
+import br.com.andre.easychallenge.presentation.bookmarks.mappers.BookmarksPresentationMapper;
 import br.com.andre.easychallenge.presentation.maps.MapsView;
 import br.com.andre.easychallenge.presentation.permission.PermissionPresenter;
 import io.reactivex.disposables.Disposable;
@@ -35,18 +37,21 @@ public class MapsPresenter implements MapsPresenterContract {
     private int DEFAULT_ZOOM = 18;
     GetCurrentPositionUsecase getCurrentPositionUsecase;
     FindAddressUsecase findAddressUsecase;
+    SaveBookmarkUsecase saveBookmarkUsecase;
     ArrayList<Disposable> disposables;
 
-    public MapsPresenter(MapsView view, PermissionPresenter permissionPresenter, MapsRepository repository) {
+    public MapsPresenter(MapsView view, PermissionPresenter permissionPresenter, MapsRepository repository,
+                         BookmarksRepository bookmarksRepository) {
         this.view = view;
         this.permissionPresenter = permissionPresenter;
-        setupUsecases(repository);
+        setupUsecases(repository, bookmarksRepository);
         disposables = new ArrayList<>();
     }
 
-    private void setupUsecases(MapsRepository repository) {
-        getCurrentPositionUsecase = new GetCurrentPositionUsecase(repository);
-        findAddressUsecase = new FindAddressUsecase(repository);
+    private void setupUsecases(MapsRepository mapsRepository, BookmarksRepository bookmarksRepository) {
+        getCurrentPositionUsecase = new GetCurrentPositionUsecase(mapsRepository);
+        findAddressUsecase = new FindAddressUsecase(mapsRepository);
+        saveBookmarkUsecase = new SaveBookmarkUsecase(bookmarksRepository);
     }
 
     @Override
@@ -109,14 +114,23 @@ public class MapsPresenter implements MapsPresenterContract {
                 error -> {
                     view.hideLoadingOverlay();
                     view.hideKeyboard();
-                    view.showErrorSnackBar(R.string.maps_menu_search_didnt_found);
+                    view.showSnackBar(R.string.maps_menu_search_didnt_found);
                 }
         ));
     }
 
     @Override
     public void saveBookmark(String dialogResult) {
-        //TODO: Create usecase to save Bookmark at SharedPreferences
+        view.showLoadingOverlay();
+        disposables.add(saveBookmarkUsecase.execute(BookmarksPresentationMapper.mapToSaveBookmarkDomainModel(dialogResult, lastKnownLocation))
+        .subscribe(
+                aVoid -> {},
+                error -> {
+                    view.hideLoadingOverlay();
+                    view.showSnackBar(R.string.save_bookmark_usecase_message_error); },
+                () ->  {
+                    view.hideLoadingOverlay();
+                    view.showSnackBar(R.string.save_bookmark_usecase_message_success); }));
     }
 
     @SuppressLint("MissingPermission")
@@ -153,7 +167,7 @@ public class MapsPresenter implements MapsPresenterContract {
             }, error -> {
                 view.hideLoadingOverlay();
                 view.disableMapPropertiesLocation();
-                view.showErrorSnackBar(R.string.maps_error_current_position);
+                view.showSnackBar(R.string.maps_error_current_position);
             }));
         }
     }

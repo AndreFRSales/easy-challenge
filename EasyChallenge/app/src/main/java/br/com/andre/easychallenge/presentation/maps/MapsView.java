@@ -16,6 +16,6 @@ public interface MapsView extends BaseView{
     void disableMapPropertiesLocation();
     void enableMapPropertiesLocation();
     void focusOnLatLng(LatLng latLng, int zoom);
-    void showErrorSnackBar(@StringRes int message);
+    void showSnackBar(@StringRes int message);
     void hideKeyboard();
 }

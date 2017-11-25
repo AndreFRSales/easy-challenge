@@ -1,4 +1,4 @@
-package br.com.andre.easychallenge.domain;
+package br.com.andre.easychallenge.domain.base;
 
 
 import io.reactivex.Observable;

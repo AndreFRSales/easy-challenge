@@ -1,10 +1,8 @@
 package br.com.andre.easychallenge.domain.map.usecases;
 
-import android.location.Location;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 
-import br.com.andre.easychallenge.domain.BaseUsecase;
+import br.com.andre.easychallenge.domain.base.BaseUsecase;
 import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
 import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
 import io.reactivex.Observable;

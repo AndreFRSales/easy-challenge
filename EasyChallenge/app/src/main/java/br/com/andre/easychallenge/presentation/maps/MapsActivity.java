@@ -3,7 +3,6 @@ package br.com.andre.easychallenge.presentation.maps;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,17 +12,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,7 +32,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.com.andre.easychallenge.R;
-import br.com.andre.easychallenge.data.map.mappers.MapsMapper;
+import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkLocalDataSource;
+import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkLocalDataSourceImp;
+import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepository;
+import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepositoryImp;
 import br.com.andre.easychallenge.data.map.repository.MapsDataRepositoryImp;
 import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSource;
 import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSourceImp;
@@ -76,6 +74,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     FusedLocationProviderClient fusedLocation;
     DialogUtils bookmarkDescriptionDialog;
 
+    //TODO REMOVER ISSO AQUI!!
+    BookmarkLocalDataSourceImp bookmarkLocalDataSource;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,13 +90,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupProperties() {
         PermissionManagerContract permissionManagerContract = new PermissionManager(this);
         permissionPresenter = new PermissionPresenter(permissionManagerContract, this);
-        MapsRepository mapsRepository = setupRepository();
-        presenter = new MapsPresenter(this, permissionPresenter, mapsRepository);
+        MapsRepository mapsRepository = setupMapsRepository();
+        BookmarksRepository bookmarksRepository = setupBookmarksRepository();
+        presenter = new MapsPresenter(this, permissionPresenter, mapsRepository, bookmarksRepository);
         fusedLocation = LocationServices.getFusedLocationProviderClient(this);
+
+    }
+
+    private BookmarksRepository setupBookmarksRepository() {
+        BookmarkLocalDataSource bookmarkLocalDataSource = new BookmarkLocalDataSourceImp(this);
+        return new BookmarksRepositoryImp(bookmarkLocalDataSource);
     }
 
     @NonNull
-    private MapsRepository setupRepository() {
+    private MapsRepository setupMapsRepository() {
         MapsRemoteDataSource remoteDataSource = new MapsRemoteDataSourceImp();
         return new MapsDataRepositoryImp(remoteDataSource);
     }
@@ -210,7 +217,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void showErrorSnackBar(int message) {
+    public void showSnackBar(int message) {
         Snackbar.make(container, getString(message), Snackbar.LENGTH_LONG).show();
     }
 
