@@ -3,6 +3,7 @@ package br.com.andre.easychallenge.presentation.maps.presenter;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.model.LatLng;
@@ -12,6 +13,8 @@ import java.util.Objects;
 
 import br.com.andre.easychallenge.R;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepository;
+import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
+import br.com.andre.easychallenge.domain.bookmarks.usecase.GetBookmarksUsecase;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.SaveBookmarkUsecase;
 import br.com.andre.easychallenge.domain.map.models.Address;
 import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
@@ -179,5 +182,6 @@ public class MapsPresenter implements MapsPresenterContract {
     private LatLng createLatLng(Address address) {
         return new LatLng(address.getLatitude(), address.getLongitude());
     }
+
 
 }

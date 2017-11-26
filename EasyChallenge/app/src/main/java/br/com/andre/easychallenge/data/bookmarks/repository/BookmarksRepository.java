@@ -1,6 +1,9 @@
 package br.com.andre.easychallenge.data.bookmarks.repository;
 
-import br.com.andre.easychallenge.data.bookmarks.models.BookmarkEntity;
+import java.util.List;
+
+import br.com.andre.easychallenge.data.bookmarks.models.BookmarkLocalEntity;
+import br.com.andre.easychallenge.data.bookmarks.models.BookmarkRepositoryEntity;
 import io.reactivex.Observable;
 
 /**
@@ -9,5 +12,6 @@ import io.reactivex.Observable;
 
 public interface BookmarksRepository {
 
-    Observable<Void> addBookmark(BookmarkEntity bookmarkEntity);
+    Observable<Void> addBookmark(BookmarkLocalEntity bookmarkLocalEntity);
+    Observable<List<BookmarkRepositoryEntity>> getBookmarks();
 }

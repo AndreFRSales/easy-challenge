@@ -9,7 +9,7 @@
     <string name="component_edit_text_dialog_hint">Type some description like Grandma\'s house</string>
 
     <!--Dialog BookmarkEntitymark-->
-    <string name="dialog_bookmark_title">Add a bookmarkEntity</string>
+    <string name="dialog_bookmark_title">Add a bookmarkLocalEntity</string>
     <string name="dialog_bookmark_positive_button">OK</string>
     <string name="dialog_bookmark_negative_button">Cancel</string>
 
