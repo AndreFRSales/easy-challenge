@@ -136,6 +136,14 @@ public class MapsPresenter implements MapsPresenterContract {
                     view.showSnackBar(R.string.save_bookmark_usecase_message_success); }));
     }
 
+    @Override
+    public void redirectMenuItem(int menuItemId) {
+        switch (menuItemId) {
+            case R.id.menu_maps_collection_bookmarks:
+                view.redirectToBookmarkCollections();
+        }
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void setupAcceptedMap(FusedLocationProviderClient fusedLocationProviderClient) {

@@ -20,4 +20,5 @@ public interface MapsPresenterContract extends BasePresenterContract{
     void checkPermission(int[] grantResults, int requestCode);
     void findAddress(String query, String key);
     void saveBookmark(String dialogResult);
+    void redirectMenuItem(int menuItemId);
 }

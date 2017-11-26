@@ -1,5 +1,5 @@
 
-<android.support.design.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/maps_container"
     android:layout_width="match_parent"
@@ -51,4 +51,4 @@
             android:layout_gravity="center"/>
         
     </FrameLayout>
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

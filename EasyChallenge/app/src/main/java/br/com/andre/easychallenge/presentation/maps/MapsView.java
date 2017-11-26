@@ -18,4 +18,5 @@ public interface MapsView extends BaseView{
     void focusOnLatLng(LatLng latLng, int zoom);
     void showSnackBar(@StringRes int message);
     void hideKeyboard();
+    void redirectToBookmarkCollections();
 }

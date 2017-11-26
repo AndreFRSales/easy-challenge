@@ -17,5 +17,8 @@
     <!--SaveBookmarkUsecase-->
     <string name="save_bookmark_usecase_message_success">Place saved successfully! :)</string>
     <string name="save_bookmark_usecase_message_error">Unfortunately it was impossible to save your place! :(</string>
+
+    <!--BookmarksActivity-->
+    <string name="title_activity_bookmarks">Bookmarks</string>
 </resources>
     
