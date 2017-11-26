@@ -3,6 +3,7 @@ package br.com.andre.easychallenge.presentation.maps;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,6 +44,7 @@ import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSource;
 import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSourceImp;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.GetBookmarksUsecase;
 import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
+import br.com.andre.easychallenge.presentation.bookmarks.BookmarksActivity;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenter;
 import br.com.andre.easychallenge.presentation.maps.presenter.MapsPresenterContract;
 import br.com.andre.easychallenge.presentation.permission.PermissionManager;
@@ -56,11 +58,11 @@ import butterknife.OnClick;
 
 import static br.com.andre.easychallenge.presentation.permission.PermissionPresenter.ACCESS_FINE_LOCATION_PERMISSION;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MapsView, SearchView.OnQueryTextListener,
+public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MapsView, SearchView.OnQueryTextListener,
         PermissionView, GoogleMap.OnMarkerDragListener, DialogUtils.OnDialogClicked {
 
     @BindView(R.id.maps_container)
-    CoordinatorLayout container;
+    FrameLayout container;
 
     @BindView(R.id.maps_toolbar)
     Toolbar toolbar;
@@ -77,8 +79,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     FusedLocationProviderClient fusedLocation;
     DialogUtils bookmarkDescriptionDialog;
 
-    //TODO REMOVER ISSO AQUI!!
-    BookmarkLocalDataSourceImp bookmarkLocalDataSource;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +132,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchView.setQueryHint(getString(R.string.search_hint));
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menuItemId = item.getItemId();
+        presenter.redirectMenuItem(menuItemId);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -243,6 +250,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void redirectToBookmarkCollections() {
+        Intent intent = new Intent(this, BookmarksActivity.class);
+        startActivity(intent);
     }
 
     @Override
