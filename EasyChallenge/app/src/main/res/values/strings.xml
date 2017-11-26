@@ -20,5 +20,6 @@
 
     <!--BookmarksActivity-->
     <string name="title_activity_bookmarks">Bookmarks</string>
+    <string name="bookmarks_error_fetching_bookmarks">Error fetching your bookmarks :/</string>
 </resources>
     

@@ -8,5 +8,4 @@ import br.com.andre.easychallenge.presentation.base.BasePresenterContract;
 
 interface BookmarkPresenterContract extends BasePresenterContract {
 
-    void fetchBookmarks();
 }
