@@ -22,9 +22,11 @@ import butterknife.ButterKnife;
 public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.ViewHolder> {
 
     List<Bookmark> bookmarks;
+    OnBookmarkListener bookmarkListener;
 
-    public BookmarksAdapter(List<Bookmark> bookmarks) {
+    public BookmarksAdapter(List<Bookmark> bookmarks, OnBookmarkListener listener) {
         this.bookmarks = bookmarks;
+        this.bookmarkListener = listener;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(bookmarks.get(position));
+        holder.bind(bookmarks.get(position), bookmarkListener);
     }
 
     @Override
@@ -51,14 +53,26 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.View
         @BindView(R.id.component_bookmark_item_delete)
         ImageView deleteIcon;
 
+        View itemView;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.itemView = itemView;
         }
 
-        public void bind(Bookmark bookmark) {
+        public void bind(Bookmark bookmark, OnBookmarkListener listener) {
             description.setText(bookmark.getDescription());
+            this.itemView.setOnClickListener(view -> {
+                if(listener != null) {
+                    listener.onBookmarkClicked(bookmark);
+                }
+            });
 //            deleteIcon.setOnClickListener();
         }
+    }
+
+    public interface OnBookmarkListener {
+        void onBookmarkClicked(Bookmark bookmark);
     }
 }

@@ -43,6 +43,7 @@ import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepositoryI
 import br.com.andre.easychallenge.data.map.repository.MapsDataRepositoryImp;
 import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSource;
 import br.com.andre.easychallenge.data.map.repository.MapsRemoteDataSourceImp;
+import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.GetBookmarksUsecase;
 import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
 import br.com.andre.easychallenge.presentation.bookmarks.BookmarksActivity;
@@ -79,6 +80,8 @@ public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallba
     PermissionPresenter permissionPresenter;
     FusedLocationProviderClient fusedLocation;
     DialogUtils bookmarkDescriptionDialog;
+    public static final String BUNDLE_KEY = "mapsBundleKey";
+    public static final String BOOKMARK_POSITION_KEY = "bookmarkPositionKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,11 @@ public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+
+        if(getIntent().getExtras() != null) {
+            presenter.loadPosition(getIntent().getExtras());
+        }
+
         presenter.start();
     }
 
@@ -242,6 +250,7 @@ public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMarkerDragEnd(Marker marker) {
         presenter.updateLastPosition(marker.getPosition());
+        presenter.focusOnLastPosition();
     }
 
     @Override
@@ -288,6 +297,13 @@ public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onDialogButtonNegativeClicked() {
         bookmarkDescriptionDialog = null;
+    }
+
+    public static Bundle newInstance(Bookmark bookmark) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BOOKMARK_POSITION_KEY, bookmark);
+
+        return bundle;
     }
 
 }

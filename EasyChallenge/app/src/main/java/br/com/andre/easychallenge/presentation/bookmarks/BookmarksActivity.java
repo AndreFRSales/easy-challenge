@@ -1,5 +1,6 @@
 package br.com.andre.easychallenge.presentation.bookmarks;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,10 +17,11 @@ import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkLocalDataSou
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarkRemoteDataSourceImp;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepositoryImp;
 import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
+import br.com.andre.easychallenge.presentation.maps.MapsActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BookmarksActivity extends AppCompatActivity implements BookmarksView{
+public class BookmarksActivity extends AppCompatActivity implements BookmarksView, BookmarksAdapter.OnBookmarkListener{
 
     @BindView(R.id.activity_bookmarks_toolbar)
     Toolbar toolbar;
@@ -64,7 +66,7 @@ public class BookmarksActivity extends AppCompatActivity implements BookmarksVie
 
     @Override
     public void showBookmarkList(List<Bookmark> bookmarks) {
-        BookmarksAdapter bookmarksAdapter = new BookmarksAdapter(bookmarks);
+        BookmarksAdapter bookmarksAdapter = new BookmarksAdapter(bookmarks, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(bookmarksAdapter);
     }
@@ -78,5 +80,13 @@ public class BookmarksActivity extends AppCompatActivity implements BookmarksVie
     @Override
     public void hideMessageError() {
         errorMessage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBookmarkClicked(Bookmark bookmark) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        Bundle bundle = MapsActivity.newInstance(bookmark);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

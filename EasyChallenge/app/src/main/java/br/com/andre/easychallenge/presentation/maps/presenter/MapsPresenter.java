@@ -3,7 +3,6 @@ package br.com.andre.easychallenge.presentation.maps.presenter;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.model.LatLng;
@@ -14,7 +13,6 @@ import java.util.Objects;
 import br.com.andre.easychallenge.R;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepository;
 import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
-import br.com.andre.easychallenge.domain.bookmarks.usecase.GetBookmarksUsecase;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.SaveBookmarkUsecase;
 import br.com.andre.easychallenge.domain.map.models.Address;
 import br.com.andre.easychallenge.domain.map.models.CurrentPosition;
@@ -22,9 +20,12 @@ import br.com.andre.easychallenge.domain.map.repository.MapsRepository;
 import br.com.andre.easychallenge.domain.map.usecases.FindAddressUsecase;
 import br.com.andre.easychallenge.domain.map.usecases.GetCurrentPositionUsecase;
 import br.com.andre.easychallenge.presentation.bookmarks.mappers.BookmarksPresentationMapper;
+import br.com.andre.easychallenge.presentation.maps.MapsActivity;
 import br.com.andre.easychallenge.presentation.maps.MapsView;
 import br.com.andre.easychallenge.presentation.permission.PermissionPresenter;
 import io.reactivex.disposables.Disposable;
+
+import static br.com.andre.easychallenge.presentation.maps.MapsActivity.BOOKMARK_POSITION_KEY;
 
 /**
  * Created by andre on 15/11/17.
@@ -112,7 +113,9 @@ public class MapsPresenter implements MapsPresenterContract {
                 address -> {
                     view.hideLoadingOverlay();
                     view.hideKeyboard();
-                    view.updateMap(createLatLng(address), DEFAULT_ZOOM);
+                    LatLng latLng = createLatLng(address);
+                    updateLastPosition(latLng);
+                    view.updateMap(latLng, DEFAULT_ZOOM);
                 },
                 error -> {
                     view.hideLoadingOverlay();
@@ -144,6 +147,13 @@ public class MapsPresenter implements MapsPresenterContract {
         }
     }
 
+    @Override
+    public void loadPosition(Bundle bundle) {
+        Bookmark bookmark = (Bookmark)bundle.getSerializable(MapsActivity.BOOKMARK_POSITION_KEY);
+        LatLng latLng = createLatLng(bookmark.getLatitude(), bookmark.getLongitude());
+        updateLastPosition(latLng);
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void setupAcceptedMap(FusedLocationProviderClient fusedLocationProviderClient) {
@@ -163,8 +173,13 @@ public class MapsPresenter implements MapsPresenterContract {
     @Override
     public void updateLastPosition(LatLng latLng) {
         lastKnownLocation = new CurrentPosition(latLng.latitude, latLng.longitude);
-        view.focusOnLatLng(latLng, DEFAULT_ZOOM);
     }
+
+    @Override
+    public void focusOnLastPosition() {
+        view.focusOnLatLng(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
+    }
+
 
     @SuppressLint("MissingPermission")
     private void getDeviceLocation(FusedLocationProviderClient fusedLocationProviderClient) {
@@ -189,6 +204,10 @@ public class MapsPresenter implements MapsPresenterContract {
 
     private LatLng createLatLng(Address address) {
         return new LatLng(address.getLatitude(), address.getLongitude());
+    }
+
+    private LatLng createLatLng(double latitude, double longitude) {
+        return new LatLng(latitude, longitude);
     }
 
 
