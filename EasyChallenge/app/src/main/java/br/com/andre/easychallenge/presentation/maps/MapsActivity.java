@@ -121,9 +121,9 @@ public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallba
 
         if(getIntent().getExtras() != null) {
             presenter.loadPosition(getIntent().getExtras());
-        } else {
-            presenter.start();
         }
+
+        presenter.start();
     }
 
     @Override

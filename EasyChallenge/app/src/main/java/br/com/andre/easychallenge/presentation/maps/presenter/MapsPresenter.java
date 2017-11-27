@@ -152,9 +152,6 @@ public class MapsPresenter implements MapsPresenterContract {
         Bookmark bookmark = (Bookmark)bundle.getSerializable(MapsActivity.BOOKMARK_POSITION_KEY);
         LatLng latLng = createLatLng(bookmark.getLatitude(), bookmark.getLongitude());
         updateLastPosition(latLng);
-        view.setToolbar();
-        view.enableMapPropertiesLocation();
-        view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
     }
 
     @SuppressLint("MissingPermission")
