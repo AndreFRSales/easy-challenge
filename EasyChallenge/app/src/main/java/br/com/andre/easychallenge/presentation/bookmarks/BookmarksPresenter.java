@@ -12,6 +12,8 @@ import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepositoryI
 import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.DeleteBookmarkUsecase;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.GetBookmarksUsecase;
+import br.com.andre.easychallenge.presentation.bookmarks.presenter.BookmarksBundleReader;
+import br.com.andre.easychallenge.presentation.bookmarks.presenter.BookmarksBundler;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -24,6 +26,7 @@ public class BookmarksPresenter implements BookmarkPresenterContract {
     List<Disposable> disposables;
     GetBookmarksUsecase getBookmarksUsecase;
     DeleteBookmarkUsecase deleteBookmarkUsecase;
+    List<Bookmark> bookmarks;
 
     public BookmarksPresenter(BookmarksView view, BookmarksRepository repository) {
         this.view = view;
@@ -35,7 +38,11 @@ public class BookmarksPresenter implements BookmarkPresenterContract {
     @Override
     public void start() {
         view.setToolbar();
-        fetchBookmarks();
+        if(bookmarks != null && bookmarks.size() > 0) {
+            view.showBookmarkList(bookmarks);
+        } else {
+            fetchBookmarks();
+        }
     }
 
     @Override
@@ -51,12 +58,13 @@ public class BookmarksPresenter implements BookmarkPresenterContract {
 
     @Override
     public void saveState(Bundle outState) {
-
+        BookmarksBundler bookmarksBundler = new BookmarksBundler(outState);
+        bookmarksBundler.setBookmarkList(bookmarks);
     }
 
     @Override
     public void restoreState(Bundle savedInstanceState) {
-
+        bookmarks = new BookmarksBundleReader(savedInstanceState).getBookmarkList();
     }
 
     public void fetchBookmarks() {
@@ -65,12 +73,11 @@ public class BookmarksPresenter implements BookmarkPresenterContract {
         disposables.add(getBookmarksUsecase.execute(null)
         .subscribe(
                 bookmarks -> {
+                    this.bookmarks = bookmarks;
                     view.showBookmarkList(bookmarks);
                     view.hideMessageError();
                     view.hideLoadingOverlay();
-                }, throwable -> {
-                    showErrorMessage();
-                }
+                }, throwable -> showErrorMessage()
         ));
     }
 

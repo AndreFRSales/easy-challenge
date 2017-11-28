@@ -21,5 +21,6 @@
     <!--BookmarksActivity-->
     <string name="title_activity_bookmarks">Bookmarks</string>
     <string name="bookmarks_error_fetching_bookmarks">Error fetching your bookmarks :/</string>
+    <string name="save_bookmark_usecase_message_error_description_place">Please, type some description for your place :D</string>
 </resources>
     
