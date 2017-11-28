@@ -3,6 +3,7 @@ package br.com.andre.easychallenge.presentation.maps.presenter;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.model.LatLng;
@@ -127,16 +128,22 @@ public class MapsPresenter implements MapsPresenterContract {
 
     @Override
     public void saveBookmark(String dialogResult) {
-        view.showLoadingOverlay();
-        disposables.add(saveBookmarkUsecase.execute(BookmarksPresentationMapper.mapToSaveBookmarkDomainModel(dialogResult, lastKnownLocation))
-        .subscribe(
-                aVoid -> {},
-                error -> {
-                    view.hideLoadingOverlay();
-                    view.showSnackBar(R.string.save_bookmark_usecase_message_error); },
-                () ->  {
-                    view.hideLoadingOverlay();
-                    view.showSnackBar(R.string.save_bookmark_usecase_message_success); }));
+        if(lastKnownLocation == null) {
+            view.showSnackBar(R.string.save_bookmark_usecase_message_error);
+        } else if(TextUtils.isEmpty(dialogResult)) {
+            view.showSnackBar(R.string.save_bookmark_usecase_message_error_description_place);
+        } else {
+            view.showLoadingOverlay();
+            disposables.add(saveBookmarkUsecase.execute(BookmarksPresentationMapper.mapToSaveBookmarkDomainModel(dialogResult, lastKnownLocation))
+                    .subscribe(
+                            aVoid -> {},
+                            error -> {
+                                view.hideLoadingOverlay();
+                                view.showSnackBar(R.string.save_bookmark_usecase_message_error); },
+                            () ->  {
+                                view.hideLoadingOverlay();
+                                view.showSnackBar(R.string.save_bookmark_usecase_message_success); }));
+        }
     }
 
     @Override
