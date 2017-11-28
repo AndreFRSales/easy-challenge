@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">EasyChallenge</string>
+    <string name="title_activity_maps">Easy Challenge</string>
+    <string name="search_hint">Street X, City</string>
+    <string name="maps_menu_search_title">Search Address</string>
+    <string name="maps_menu_search_didnt_found">Sorry, we didn\'t find any address.</string>
+    <string name="menu_maps_collection_bookmarks_title">Collection Bookmarks</string>
+    <string name="maps_error_current_position">Ops, something wrong ocurred trying to localize you. Are you at another planet? :o</string>
+    <string name="component_edit_text_dialog_hint">Type some description like Grandma\'s house</string>
+
+    <!--Dialog BookmarkEntitymark-->
+    <string name="dialog_bookmark_title">Add a bookmarkLocalEntity</string>
+    <string name="dialog_bookmark_positive_button">OK</string>
+    <string name="dialog_bookmark_negative_button">Cancel</string>
+
+
+    <!--SaveBookmarkUsecase-->
+    <string name="save_bookmark_usecase_message_success">Place saved successfully! :)</string>
+    <string name="save_bookmark_usecase_message_error">Unfortunately it was impossible to save your place! :(</string>
+
+    <!--BookmarksActivity-->
+    <string name="title_activity_bookmarks">Bookmarks</string>
+    <string name="bookmarks_error_fetching_bookmarks">Error fetching your bookmarks :/</string>
+    <string name="save_bookmark_usecase_message_error_description_place">Please, type some description for your place :D</string>
+</resources>
+    
