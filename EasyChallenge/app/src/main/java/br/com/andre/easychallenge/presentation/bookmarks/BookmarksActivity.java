@@ -21,7 +21,7 @@ import br.com.andre.easychallenge.presentation.maps.MapsActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BookmarksActivity extends AppCompatActivity implements BookmarksView, BookmarksAdapter.OnBookmarkListener{
+public class BookmarksActivity extends AppCompatActivity implements BookmarksView, BookmarksAdapter.OnBookmarkListener {
 
     @BindView(R.id.activity_bookmarks_toolbar)
     Toolbar toolbar;
@@ -69,16 +69,19 @@ public class BookmarksActivity extends AppCompatActivity implements BookmarksVie
         BookmarksAdapter bookmarksAdapter = new BookmarksAdapter(bookmarks, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(bookmarksAdapter);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public void showMessageError(int message) {
+        recyclerView.setVisibility(View.GONE);
         errorMessage.setText(message);
         errorMessage.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideMessageError() {
+        recyclerView.setVisibility(View.VISIBLE);
         errorMessage.setVisibility(View.GONE);
     }
 
@@ -88,5 +91,10 @@ public class BookmarksActivity extends AppCompatActivity implements BookmarksVie
         Bundle bundle = MapsActivity.newInstance(bookmark);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDeleteBookmarkClicked(Bookmark bookmark) {
+        presenter.deleteBookmark(bookmark);
     }
 }

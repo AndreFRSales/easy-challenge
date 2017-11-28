@@ -34,4 +34,9 @@ public class BookmarksRepositoryImp implements BookmarksRepository {
                 return bookmarkEntities;
         });
     }
+
+    @Override
+    public Observable<Void> deleteBookmark(BookmarkLocalEntity bookmark) {
+        return bookmarkLocalDataSource.delete(bookmark);
+    }
 }
