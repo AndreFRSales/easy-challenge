@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.andre.easychallenge.data.bookmarks.models.BookmarkLocalEntity;
 import br.com.andre.easychallenge.data.bookmarks.models.BookmarkRepositoryEntity;
+import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
 import io.reactivex.Observable;
 
 /**
@@ -14,4 +15,5 @@ public interface BookmarksRepository {
 
     Observable<Void> addBookmark(BookmarkLocalEntity bookmarkLocalEntity);
     Observable<List<BookmarkRepositoryEntity>> getBookmarks();
+    Observable<Void> deleteBookmark(BookmarkLocalEntity bookmark);
 }

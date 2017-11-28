@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.andre.easychallenge.R;
+import br.com.andre.easychallenge.data.bookmarks.mappers.BookmarksDomainMapper;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepository;
 import br.com.andre.easychallenge.data.bookmarks.repository.BookmarksRepositoryImp;
+import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
+import br.com.andre.easychallenge.domain.bookmarks.usecase.DeleteBookmarkUsecase;
 import br.com.andre.easychallenge.domain.bookmarks.usecase.GetBookmarksUsecase;
 import io.reactivex.disposables.Disposable;
 
@@ -20,10 +23,12 @@ public class BookmarksPresenter implements BookmarkPresenterContract {
     BookmarksView view;
     List<Disposable> disposables;
     GetBookmarksUsecase getBookmarksUsecase;
+    DeleteBookmarkUsecase deleteBookmarkUsecase;
 
     public BookmarksPresenter(BookmarksView view, BookmarksRepository repository) {
         this.view = view;
         getBookmarksUsecase = new GetBookmarksUsecase(repository);
+        deleteBookmarkUsecase = new DeleteBookmarkUsecase(repository);
         disposables = new ArrayList<>();
     }
 
@@ -61,11 +66,26 @@ public class BookmarksPresenter implements BookmarkPresenterContract {
         .subscribe(
                 bookmarks -> {
                     view.showBookmarkList(bookmarks);
+                    view.hideMessageError();
                     view.hideLoadingOverlay();
                 }, throwable -> {
-                    view.hideLoadingOverlay();
-                    view.showMessageError(R.string.bookmarks_error_fetching_bookmarks);
+                    showErrorMessage();
                 }
         ));
+    }
+
+    private void showErrorMessage() {
+        view.hideLoadingOverlay();
+        view.showMessageError(R.string.bookmarks_error_fetching_bookmarks);
+    }
+
+    @Override
+    public void deleteBookmark(Bookmark bookmark) {
+        view.showLoadingOverlay();
+        deleteBookmarkUsecase.execute(BookmarksDomainMapper.mapToDomainUsecase(bookmark))
+                .subscribe(
+                        aVoid -> { },
+                        throwable -> showErrorMessage(),
+                        this::fetchBookmarks);
     }
 }

@@ -14,4 +14,5 @@ public interface BookmarkLocalDataSource {
 
     Observable<Void> addBookmark(BookmarkLocalEntity bookmarkLocalEntity);
     Observable<List<BookmarkRepositoryEntity>> getBookmarks();
+    Observable<Void> delete(BookmarkLocalEntity bookmarkLocalEntity);
 }

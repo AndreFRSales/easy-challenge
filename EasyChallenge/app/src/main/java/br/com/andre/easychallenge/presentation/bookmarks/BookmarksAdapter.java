@@ -1,6 +1,5 @@
 package br.com.andre.easychallenge.presentation.bookmarks;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +21,11 @@ import butterknife.ButterKnife;
 public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.ViewHolder> {
 
     List<Bookmark> bookmarks;
-    OnBookmarkListener bookmarkListener;
+    OnBookmarkListener clickBookmarkListener;
 
     public BookmarksAdapter(List<Bookmark> bookmarks, OnBookmarkListener listener) {
         this.bookmarks = bookmarks;
-        this.bookmarkListener = listener;
+        this.clickBookmarkListener = listener;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(bookmarks.get(position), bookmarkListener);
+        holder.bind(bookmarks.get(position), clickBookmarkListener);
     }
 
     @Override
@@ -68,11 +67,16 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.View
                     listener.onBookmarkClicked(bookmark);
                 }
             });
-//            deleteIcon.setOnClickListener();
+            deleteIcon.setOnClickListener(view -> {
+                if(listener != null) {
+                    listener.onDeleteBookmarkClicked(bookmark);
+                }
+            });
         }
     }
 
     public interface OnBookmarkListener {
         void onBookmarkClicked(Bookmark bookmark);
+        void onDeleteBookmarkClicked(Bookmark bookmark);
     }
 }

@@ -1,5 +1,6 @@
 package br.com.andre.easychallenge.presentation.bookmarks;
 
+import br.com.andre.easychallenge.domain.bookmarks.models.Bookmark;
 import br.com.andre.easychallenge.presentation.base.BasePresenterContract;
 
 /**
@@ -8,4 +9,5 @@ import br.com.andre.easychallenge.presentation.base.BasePresenterContract;
 
 interface BookmarkPresenterContract extends BasePresenterContract {
 
+    void deleteBookmark(Bookmark bookmark);
 }

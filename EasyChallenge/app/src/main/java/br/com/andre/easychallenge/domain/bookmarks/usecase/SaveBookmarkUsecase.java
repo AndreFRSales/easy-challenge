@@ -13,16 +13,14 @@ import io.reactivex.Observable;
 public class SaveBookmarkUsecase extends BaseUsecase<Void, SaveBookmarkUsecase.Params> {
 
     BookmarksRepository bookmarksRepository;
-    BookmarksMapper domainMapper;
 
     public SaveBookmarkUsecase(BookmarksRepository bookmarksRepository) {
         this.bookmarksRepository = bookmarksRepository;
-        this.domainMapper = new BookmarksMapper();
     }
 
     @Override
     protected Observable<Void> createUseCase(Params params) {
-        return bookmarksRepository.addBookmark(domainMapper.mapToRepositoryModel(params));
+        return bookmarksRepository.addBookmark(BookmarksMapper.mapToRepositoryModel(params));
     }
 
     public static class Params {
