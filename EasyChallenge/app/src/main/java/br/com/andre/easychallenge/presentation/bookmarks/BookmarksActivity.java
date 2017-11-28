@@ -45,7 +45,24 @@ public class BookmarksActivity extends AppCompatActivity implements BookmarksVie
         ButterKnife.bind(this);
         presenter = new BookmarksPresenter(this, new BookmarksRepositoryImp(new BookmarkLocalDataSourceImp(this),
                 new BookmarkRemoteDataSourceImp()));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         presenter.start();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        presenter.saveState(outState);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        presenter.restoreState(savedInstanceState);
     }
 
     @Override
