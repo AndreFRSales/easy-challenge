@@ -63,12 +63,11 @@ public class MapsPresenter implements MapsPresenterContract {
     public void start() {
         view.requestLocationPermission(REQUEST_LOCATION);
         view.setToolbar();
-        if(lastKnownLocation == null) {
-            permissionPresenter.requestPermission();
-        } else {
-            view.enableMapPropertiesLocation();
-            view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
-        }
+        permissionPresenter.requestPermission();
+    }
+
+    private void loadLastKnowLocation() {
+        view.updateMap(createLatLng(lastKnownLocation), DEFAULT_ZOOM);
     }
 
     @Override
@@ -157,8 +156,9 @@ public class MapsPresenter implements MapsPresenterContract {
     @Override
     public void loadPosition(Bundle bundle) {
         Bookmark bookmark = (Bookmark)bundle.getSerializable(MapsActivity.BOOKMARK_POSITION_KEY);
-        LatLng latLng = createLatLng(bookmark.getLatitude(), bookmark.getLongitude());
-        updateLastPosition(latLng);
+        if(bookmark != null) {
+            lastKnownLocation = new CurrentPosition(bookmark.getLatitude(), bookmark.getLongitude());
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -166,7 +166,11 @@ public class MapsPresenter implements MapsPresenterContract {
     public void setupAcceptedMap(FusedLocationProviderClient fusedLocationProviderClient) {
         permissionGranted = true;
         view.enableMapPropertiesLocation();
-        getDeviceLocation(fusedLocationProviderClient);
+        if(lastKnownLocation != null) {
+            loadLastKnowLocation();
+        } else {
+            getDeviceLocation(fusedLocationProviderClient);
+        }
     }
 
 
@@ -174,7 +178,9 @@ public class MapsPresenter implements MapsPresenterContract {
     @Override
     public void setupRejectedMap() {
         view.disableMapPropertiesLocation();
-        lastKnownLocation = null;
+        if(lastKnownLocation != null) {
+            loadLastKnowLocation();
+        }
     }
 
     @Override
@@ -212,10 +218,4 @@ public class MapsPresenter implements MapsPresenterContract {
     private LatLng createLatLng(Address address) {
         return new LatLng(address.getLatitude(), address.getLongitude());
     }
-
-    private LatLng createLatLng(double latitude, double longitude) {
-        return new LatLng(latitude, longitude);
-    }
-
-
 }

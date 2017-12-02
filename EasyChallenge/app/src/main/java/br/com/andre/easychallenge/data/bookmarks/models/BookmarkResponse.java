@@ -10,9 +10,9 @@ public class BookmarkResponse {
 
     @SerializedName("name")
     private String name;
-    @SerializedName("longitude")
-    private double latitude;
     @SerializedName("latitude")
+    private double latitude;
+    @SerializedName("longitude")
     private double longitude;
 
     public String getName() {
