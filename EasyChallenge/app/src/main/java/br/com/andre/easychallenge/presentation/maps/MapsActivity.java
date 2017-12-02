@@ -80,7 +80,6 @@ public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallba
     PermissionPresenter permissionPresenter;
     FusedLocationProviderClient fusedLocation;
     DialogUtils bookmarkDescriptionDialog;
-    public static final String BUNDLE_KEY = "mapsBundleKey";
     public static final String BOOKMARK_POSITION_KEY = "bookmarkPositionKey";
 
     @Override
@@ -178,7 +177,6 @@ public  class MapsActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         presenter.saveState(outState);
-
         super.onSaveInstanceState(outState);
     }
 
